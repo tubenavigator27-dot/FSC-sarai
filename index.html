@@ -3,94 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Focus Academy Ultimate</title>
+    <title>Focus Academy Admin Master</title>
     <style>
-        /* --- CSS VARIABLES --- */
         :root {
-            --primary: #4F46E5; /* Default Indigo */
+            --primary: #4F46E5;
             --bg: #F8FAFC;
             --card-bg: #ffffff;
             --text: #0F172A;
-            --text-sec: #64748B;
-            --success: #10B981;
             --danger: #EF4444;
+            --success: #10B981;
             --gradient: linear-gradient(135deg, var(--primary), #9333EA);
         }
-
-        body.dark-mode {
-            --bg: #0F172A;
-            --card-bg: #1E293B;
-            --text: #F8FAFC;
-            --text-sec: #94A3B8;
-        }
-
+        body.dark-mode { --bg: #0F172A; --card-bg: #1E293B; --text: #F8FAFC; }
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0; padding: 0; padding-bottom: 90px;
-            user-select: none; -webkit-tap-highlight-color: transparent;
-            transition: background 0.3s, color 0.3s;
+            user-select: none; transition: background 0.3s;
         }
-
-        /* --- LOGIN --- */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .scan-box { width: 100px; height: 100px; background: var(--card-bg); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-size: 40px; }
         .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 85%; margin: 20px 0; }
-        .role-card { background: var(--card-bg); padding: 15px; border-radius: 12px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; color: var(--text); }
+        .role-card { background: var(--card-bg); padding: 15px; border-radius: 12px; text-align: center; border: 2px solid transparent; cursor: pointer; }
         .role-card.selected { border-color: var(--primary); background: rgba(79, 70, 229, 0.1); }
-        .login-input { padding: 15px; width: 80%; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; background: var(--card-bg); color: var(--text); }
-
-        /* --- LAYOUT --- */
+        .login-input { padding: 15px; width: 80%; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 10px; background: var(--card-bg); color: var(--text); }
         .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        header { background: var(--gradient); padding: 20px; color: white; border-radius: 0 0 25px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        
+        header { background: var(--gradient); padding: 20px; color: white; border-radius: 0 0 25px 25px; display: flex; justify-content: space-between; align-items: center; }
         .grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .card { background: var(--card-bg); padding: 15px 5px; border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .card:active { transform: scale(0.95); }
-        .card-icon { font-size: 26px; margin-bottom: 8px; }
-        
         .btn-submit { width: 100%; background: var(--gradient); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        /* --- COMPONENTS --- */
         .list-item { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-del { color: var(--danger); border: none; background: none; font-size: 18px; cursor: pointer; }
         
-        /* QUOTE WIDGET */
-        .quote-box { background: linear-gradient(to right, #f6d365, #fda085); padding: 15px; border-radius: 15px; color: #333; margin-bottom: 15px; font-style: italic; position: relative; }
+        /* STUDENT TOOLS */
+        .progress-bar { background: #eee; border-radius: 10px; height: 10px; width: 100%; margin: 5px 0; overflow: hidden; }
+        .progress-fill { background: var(--success); height: 100%; transition: 0.3s; }
+        .timer-display { font-size: 40px; font-weight: bold; text-align: center; margin: 20px 0; }
+        .quiz-opt { display: block; padding: 10px; background: #f1f5f9; margin: 5px 0; border-radius: 8px; color:#333; font-size: 14px; }
         
-        /* THEME PICKER */
-        .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .theme-ball { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid #ddd; }
-
-        /* UTILS */
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; margin-bottom: 10px; font-family: inherit; background: var(--card-bg); color: var(--text); }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #33333310; z-index: 1000; }
-        .nav-item { text-align: center; color: var(--text-sec); flex: 1; font-size: 10px; }
-        .nav-icon { font-size: 24px; display: block; margin-bottom: 2px; }
-        
-        /* POLLS */
-        .poll-opt { padding: 10px; background: #eee; border-radius: 5px; margin-bottom: 5px; cursor: pointer; color:#333; }
-        .poll-opt:hover { background: #ddd; }
+        .nav-icon { font-size: 24px; display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="scan-box">🎓</div>
+        <div style="font-size:50px;">👑</div>
         <h2>Focus Academy</h2>
-        <p style="color:var(--text-sec); font-size:12px;">Infinity + Sync Chat</p>
-        
         <div class="role-grid">
             <div class="role-card selected" onclick="setRole('student', this)">👨‍🎓 Student</div>
             <div class="role-card" onclick="setRole('parent', this)">👪 Parent</div>
             <div class="role-card" onclick="setRole('teacher', this)">👨‍🏫 Teacher</div>
             <div class="role-card" onclick="setRole('admin', this)">🏢 Admin</div>
         </div>
-
-        <input type="text" id="username" class="login-input" placeholder="Enter Name">
+        <input type="text" id="username" class="login-input" placeholder="Name">
+        <select id="user-class" class="login-input">
+            <option value="">Select Class</option>
+            <option value="6">Class 6</option><option value="7">Class 7</option><option value="8">Class 8</option>
+            <option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option>
+        </select>
+        <input type="password" id="password" class="login-input" placeholder="Password" style="display:none;">
         <button class="btn-submit" style="width:80%;" onclick="login()">Login</button>
     </div>
 
@@ -98,255 +72,219 @@
         <header>
             <div>
                 <h2 style="margin:0; font-size:18px;">Focus Academy</h2>
-                <small id="header-role">Panel</small>
+                <small id="header-info">--</small>
             </div>
-            <button onclick="toggleDarkMode()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:5px 10px; border-radius:15px; font-size:12px;">🌓 Theme</button>
+            <button onclick="document.body.classList.toggle('dark-mode')" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:5px; border-radius:5px;">🌓</button>
         </header>
 
         <div id="dashboard" class="page active">
-            <div class="quote-box">
-                <span id="daily-quote">"Education is the passport to the future."</span>
-                <button onclick="readNotice()" style="float:right; background:none; border:none; font-size:20px;">🔊</button>
-            </div>
-
-            <div id="notice-board" style="margin-bottom:20px;"></div>
+            <div id="notice-board"></div>
+            <button id="admin-notice-btn" class="btn-submit" style="display:none;" onclick="addNotice()">+ Add Notice</button>
             <div id="menu-grid" class="grid-menu"></div>
         </div>
 
-        <div id="poll-page" class="page">
-            <h2>🗳️ Live Poll</h2>
-            <div class="card" style="width:auto; text-align:left; padding:15px; margin-bottom:10px;">
-                <h3>Where should we go for the Trip?</h3>
-                <div class="poll-opt" onclick="vote('Zoo')">🐯 Zoo (40%)</div>
-                <div class="poll-opt" onclick="vote('Museum')">🏛️ Museum (20%)</div>
-                <div class="poll-opt" onclick="vote('Water Park')">🌊 Water Park (40%)</div>
+        <div id="quiz-page" class="page">
+            <h2>🧠 Class Quiz</h2>
+            <div id="quiz-manage-box" style="display:none; background:#eef2ff; padding:15px; border-radius:10px; margin-bottom:15px;">
+                <input id="new-q" placeholder="Question"><input id="q-o1" placeholder="Op 1"><input id="q-o2" placeholder="Op 2"><input id="q-o3" placeholder="Op 3"><input id="q-o4" placeholder="Op 4">
+                <select id="q-ans" class="login-input"><option value="1">Ans: 1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                <button class="btn-submit" onclick="addQuestion()">Add Question</button>
+                <hr><h4>📊 Submissions</h4><div id="quiz-results-list"></div>
             </div>
+            <div id="quiz-list"></div>
+            <button id="quiz-submit-btn" class="btn-submit" onclick="submitQuiz()">Submit</button>
         </div>
 
-        <div id="notes-page" class="page">
-            <h2>📒 Secret Diary</h2>
-            <textarea id="private-note" rows="10" placeholder="Type your personal notes here..."></textarea>
-            <button class="btn-submit" onclick="saveNote()">Save to Memory</button>
-        </div>
-
-        <div id="theme-page" class="page">
-            <h2>🎨 App Theme</h2>
-            <p>Select your favorite color:</p>
-            <div class="theme-grid">
-                <div class="theme-ball" style="background:#4F46E5;" onclick="setTheme('#4F46E5')"></div> 
-                <div class="theme-ball" style="background:#EF4444;" onclick="setTheme('#EF4444')"></div> 
-                <div class="theme-ball" style="background:#10B981;" onclick="setTheme('#10B981')"></div> 
-                <div class="theme-ball" style="background:#F59E0B;" onclick="setTheme('#F59E0B')"></div> 
-            </div>
-        </div>
-
-        <div id="help-page" class="page">
-            <h2>📞 Emergency Help</h2>
-            <div class="list-item" style="border-left-color:red" onclick="alert('Dialing 102...')"><b>🚑 Ambulance</b><b>102</b></div>
-            <div class="list-item" style="border-left-color:orange" onclick="alert('Dialing 101...')"><b>🚒 Fire</b><b>101</b></div>
-            <div class="list-item" style="border-left-color:blue" onclick="alert('Dialing 100...')"><b>🚓 Police</b><b>100</b></div>
-            <div class="list-item" onclick="alert('Dialing Admin...')"><b>🏫 School Admin</b><b>+91...</b></div>
-        </div>
-
-        <div id="gallery-page" class="page">
-            <h2>📸 Gallery</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div style="background:#ffe4e6; height:100px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#333;">Event 1</div>
-                <div style="background:#dbeafe; height:100px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#333;">Event 2</div>
-            </div>
-        </div>
-
-        <div id="calc-page" class="page">
-            <h2>🧮 Calculator</h2>
-            <input type="number" id="m-obt" placeholder="Obtained"><input type="number" id="m-tot" placeholder="Total">
-            <button class="btn-submit" onclick="alert(((document.getElementById('m-obt').value / document.getElementById('m-tot').value)*100).toFixed(2) + '%')">Calc %</button>
-        </div>
-
-        <div id="bus-page" class="page"><h2>🚌 Bus</h2><div class="list-item"><b>Current Loc:</b> Sarai Market</div></div>
-        <div id="file-page" class="page"><h2>📂 Files</h2><div class="list-item">Syllabus_2026.pdf</div></div>
-        <div id="whiteboard-page" class="page"><h2>🎨 Whiteboard</h2><div style="border:1px solid #999; height:300px; background:white;"></div></div>
-        <div id="qr-page" class="page"><h2>🔳 ID Card</h2><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Focus" style="display:block; margin:0 auto;"></div>
-        
         <div id="chat-page" class="page">
-            <h2>💬 Live Chat</h2>
-            <div style="height:350px; background:#f0f0f0; border-radius:10px; margin-bottom:10px; overflow-y:scroll; padding:10px;" id="chat-disp"></div>
-            <div style="display:flex; gap:10px;">
-                <input id="chat-in" placeholder="Type here..." style="margin:0;">
-                <button class="btn-submit" style="width:60px; margin:0;" onclick="sendMsg()">➤</button>
+            <h2>💬 Class Chat</h2>
+            <div id="chat-disp" style="height:350px; background:#f0f0f0; border-radius:10px; overflow-y:scroll; padding:10px;"></div>
+            <input id="chat-in" class="login-input" style="width:70%; margin-top:10px;" placeholder="Message..."><button class="btn-submit" style="width:25%;" onclick="sendMsg()">Send</button>
+            <button id="admin-chat-clear" class="btn-submit" style="display:none; background:red;" onclick="clearChat()">🗑️ Clear All Chat</button>
+        </div>
+
+        <div id="leaderboard-page" class="page">
+            <h2>🏆 Leaderboard</h2>
+            <div id="lb-list"></div>
+        </div>
+
+        <div id="fee-page" class="page"><h2>💰 Fee Portal</h2><div class="card"><h3>Monthly Due: ₹ 2,500</h3><button class="btn-submit">Pay Now</button><button class="btn-submit" style="background:#333;">Download Receipt</button></div></div>
+        
+        <div id="study-tools-page" class="page">
+            <h2>📖 Study Tools</h2>
+            <div class="card" style="width:auto; padding:15px;">
+                <div class="timer-display" id="timer-box">25:00</div>
+                <button class="btn-submit" style="background:var(--success)" onclick="startTimer()">Start</button>
+                <button class="btn-submit" style="background:var(--danger)" onclick="resetTimer()">Reset</button>
             </div>
         </div>
+
+        <div id="gallery-page" class="page"><h2>📸 Gallery</h2><div class="card">Photos Coming Soon</div></div>
+        <div id="qr-page" class="page"><h2>🔳 Digital ID</h2><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Focus" style="display:block; margin:auto;"></div>
 
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="goHome()"><span class="nav-icon">🏠</span>Home</div>
-            <div class="nav-item" onclick="nav('gallery-page')"><span class="nav-icon">📸</span>Gallery</div>
+            <div class="nav-item" onclick="goHome()"><span class="nav-icon">🏠</span>Home</div>
+            <div class="nav-item" id="nav-quiz-icon" onclick="nav('quiz-page')"><span class="nav-icon">🧠</span>Quiz</div>
             <div class="nav-item" onclick="nav('chat-page')"><span class="nav-icon">💬</span>Chat</div>
         </div>
     </div>
 
     <script>
-        // --- 1. DATABASE & STATE ---
         const db = {
-            save: () => localStorage.setItem('focusFinalDB', JSON.stringify(appData)),
+            save: () => localStorage.setItem('focusMasterFinalDB', JSON.stringify(appData)),
             load: () => {
-                const d = localStorage.getItem('focusFinalDB');
-                // Ensure chats array exists even in fresh load
-                return d ? JSON.parse(d) : { notices: ["Welcome to Focus Academy!"], chats: [], note: "" };
+                const d = localStorage.getItem('focusMasterFinalDB');
+                return d ? JSON.parse(d) : { classes: {} };
             }
         };
 
         let appData = db.load();
-        // Fix for older data versions if chats is missing
-        if(!appData.chats) appData.chats = [];
-        
-        let currentUser = { role: 'student', name: '' };
+        let currentUser = { role: 'student', name: '', class: '' };
+        let timerInterval;
 
-        // --- 2. AUTHENTICATION ---
         function setRole(r, el) {
             currentUser.role = r;
             document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
+            document.getElementById('password').style.display = (r==='admin' || r==='teacher') ? 'block' : 'none';
         }
 
         function login() {
             const n = document.getElementById('username').value;
-            if(!n) return alert("Enter Name");
-            currentUser.name = n;
-            
+            const c = document.getElementById('user-class').value;
+            const p = document.getElementById('password').value;
+            if(!n || !c) return alert("Fill Name & Class");
+            if(currentUser.role==='admin' && p!=='1234') return alert("Wrong Admin Pass");
+            if(currentUser.role==='teacher' && p!=='5678') return alert("Wrong Teacher Pass");
+
+            currentUser.name = n; currentUser.class = c;
+            if(!appData.classes[c]) appData.classes[c] = { notices: ["Welcome"], chats: [], quizzes: [], leaderboard: [], results: [] };
+
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-ui').style.display = 'block';
-            document.getElementById('header-role').innerText = currentUser.role.toUpperCase();
-            
-            // Load Private Note
-            if(document.getElementById('private-note')) {
-                document.getElementById('private-note').value = appData.note || ""; 
+            document.getElementById('header-info').innerText = `${currentUser.role.toUpperCase()} | Class ${c}`;
+
+            // Admin/Teacher Specific UI
+            if(currentUser.role==='admin' || currentUser.role==='teacher') {
+                document.getElementById('quiz-manage-box').style.display = 'block';
+                document.getElementById('admin-notice-btn').style.display = 'block';
+                if(currentUser.role==='admin') document.getElementById('admin-chat-clear').style.display = 'block';
             }
+            
+            // Parent: Hide Quiz
+            document.getElementById('nav-quiz-icon').style.display = (currentUser.role==='parent') ? 'none' : 'flex';
 
             renderDash();
-            renderChat(); // Load existing chat history
         }
 
-        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-
-        // --- 3. DASHBOARD RENDERING ---
         function renderDash() {
-            const grid = document.getElementById('menu-grid');
-            grid.innerHTML = '';
-            let items = [];
-
-            // Universal Items
-            items.push({i:'💬', l:'Chat', f:"nav('chat-page')"});
-            items.push({i:'🎨', l:'Theme', f:"nav('theme-page')"}); 
-            items.push({i:'📒', l:'Diary', f:"nav('notes-page')"}); 
-            items.push({i:'📞', l:'Help', f:"nav('help-page')"}); 
-            items.push({i:'🗳️', l:'Vote', f:"nav('poll-page')"}); 
-
-            // Role Specific
-            if(currentUser.role === 'student') {
-                items.push({i:'📸', l:'Gallery', f:"nav('gallery-page')"});
-                items.push({i:'🧮', l:'Calc', f:"nav('calc-page')"});
-                items.push({i:'🎨', l:'Board', f:"nav('whiteboard-page')"});
-                items.push({i:'🚌', l:'Bus', f:"nav('bus-page')"});
-                items.push({i:'🔳', l:'ID Card', f:"nav('qr-page')"});
-                items.push({i:'📂', l:'Files', f:"nav('file-page')"});
-            } else if(currentUser.role === 'admin') {
-                items.push({i:'📂', l:'Files', f:"nav('file-page')"});
+            const grid = document.getElementById('menu-grid'); grid.innerHTML = '';
+            let items = [
+                {i:'💬', l:'Chat', f:"nav('chat-page')"},
+                {i:'🏆', l:'Leaders', f:"nav('leaderboard-page')"},
+                {i:'📸', l:'Gallery', f:"nav('gallery-page')"},
+                {i:'🔳', l:'ID Card', f:"nav('qr-page')"}
+            ];
+            if(currentUser.role==='parent') items.unshift({i:'💰', l:'Fees', f:"nav('fee-page')"});
+            if(currentUser.role==='student') {
+                items.push({i:'🧠', l:'Quiz', f:"nav('quiz-page')"}, {i:'📖', l:'Tools', f:"nav('study-tools-page')"});
             }
+            if(currentUser.role==='teacher') items.push({i:'🧠', l:'Quiz', f:"nav('quiz-page')"});
 
-            items.forEach(x => {
-                grid.innerHTML += `<div class="card" onclick="${x.f}"><span class="card-icon">${x.i}</span><b>${x.l}</b></div>`;
+            items.forEach(x => grid.innerHTML += `<div class="card" onclick="${x.f}"><span>${x.i}</span><b>${x.l}</b></div>`);
+
+            let h = '';
+            appData.classes[currentUser.class].notices.forEach((n,i) => {
+                h += `<div class="list-item"><span>${n}</span> ${currentUser.role==='admin' ? `<button class="btn-del" onclick="delNote(${i})">🗑️</button>` : ''}</div>`;
             });
-            
-            // Notices
-            let nHtml = '';
-            appData.notices.forEach(n => nHtml += `<div class="list-item">${n}</div>`);
-            document.getElementById('notice-board').innerHTML = nHtml;
+            document.getElementById('notice-board').innerHTML = h;
         }
 
-        // --- 4. CHAT SYSTEM (SYNCED) ---
-        
+        // ADMIN FEATURES
+        function addNotice() {
+            let t = prompt("Enter Notice Message:");
+            if(t) { appData.classes[currentUser.class].notices.unshift(t); db.save(); renderDash(); }
+        }
+        function delNote(i) { appData.classes[currentUser.class].notices.splice(i,1); db.save(); renderDash(); }
+        function clearChat() { if(confirm("Clear all messages?")) { appData.classes[currentUser.class].chats = []; db.save(); renderChat(); } }
+        function delLB(i) { appData.classes[currentUser.class].leaderboard.splice(i,1); db.save(); renderLB(); }
+        function delRes(i) { appData.classes[currentUser.class].results.splice(i,1); db.save(); renderQuizResults(); }
+
+        // QUIZ
+        function addQuestion() {
+            let q = document.getElementById('new-q').value;
+            let o = [document.getElementById('q-o1').value, document.getElementById('q-o2').value, document.getElementById('q-o3').value, document.getElementById('q-o4').value];
+            let a = document.getElementById('q-ans').value;
+            if(!q || o.includes("")) return alert("Fill all fields");
+            appData.classes[currentUser.class].quizzes.push({q, o, a});
+            db.save(); renderQuiz(); alert("Question Added!");
+        }
+        function renderQuiz() {
+            let h = '';
+            appData.classes[currentUser.class].quizzes.forEach((q, i) => {
+                h += `<div class="list-item" style="display:block;"><b>Q${i+1}: ${q.q}</b>${q.o.map((opt, oi) => `<label class="quiz-opt"><input type="radio" name="q${i}" value="${oi+1}"> ${opt}</label>`).join('')} ${currentUser.role==='admin' ? `<button style="color:red; float:right;" onclick="delQuiz(${i})">Delete Q</button>` : ''}</div>`;
+            });
+            document.getElementById('quiz-list').innerHTML = h;
+        }
+        function delQuiz(i) { appData.classes[currentUser.class].quizzes.splice(i,1); db.save(); renderQuiz(); }
+
+        function submitQuiz() {
+            let score = 0, total = appData.classes[currentUser.class].quizzes.length;
+            if(total===0) return alert("No quiz available");
+            appData.classes[currentUser.class].quizzes.forEach((q, i) => {
+                let sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if(sel && sel.value == q.a) score++;
+            });
+            let p = ((score/total)*100).toFixed(0);
+            alert(`Result: ${score}/${total} (${p}%)`);
+            appData.classes[currentUser.class].results.push({name: currentUser.name, score: `${score}/${total}`, p: p});
+            let lb = appData.classes[currentUser.class].leaderboard;
+            let uIdx = lb.findIndex(u => u.n === currentUser.name);
+            if(uIdx > -1) { if(p > lb[uIdx].p) { lb[uIdx].p = p; } } else { lb.push({n: currentUser.name, p: p}); }
+            lb.sort((a,b) => b.p - a.p); db.save();
+        }
+
+        function renderLB() {
+            let h = '';
+            appData.classes[currentUser.class].leaderboard.forEach((r, i) => {
+                h += `<div class="list-item"><span>#${i+1} <b>${r.n}</b></span> <span><b>${r.p}%</b> ${currentUser.role==='admin' ? `<button onclick="delLB(${i})" style="margin-left:10px;">🗑️</button>` : ''}</span></div>`;
+            });
+            document.getElementById('lb-list').innerHTML = h || "No rankings yet.";
+        }
+
+        function renderQuizResults() {
+            let h = '';
+            (appData.classes[currentUser.class].results || []).reverse().forEach((r,i) => h += `<div class="list-item" style="font-size:11px;"><b>${r.name}</b>: ${r.score} (${r.p}%) ${currentUser.role==='admin' ? `<button onclick="delRes(${i})">🗑️</button>` : ''}</div>`);
+            document.getElementById('quiz-results-list').innerHTML = h;
+        }
+
+        // CHAT
         function sendMsg() {
-            let input = document.getElementById('chat-in');
-            let text = input.value;
-            
-            if(text.trim() !== "") {
-                // 1. Add message to data
-                let newMsg = {
-                    sender: currentUser.role.toUpperCase(), 
-                    name: currentUser.name,
-                    text: text,
-                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                };
-                
-                appData.chats.push(newMsg);
-                
-                // 2. Save to Storage
-                db.save();
-                
-                // 3. Clear Input & Render
-                input.value = '';
-                renderChat();
-            }
+            let t = document.getElementById('chat-in').value; if(!t) return;
+            appData.classes[currentUser.class].chats.push({n:currentUser.name, r:currentUser.role, t:t});
+            db.save(); document.getElementById('chat-in').value=''; renderChat();
         }
-
         function renderChat() {
-            const chatBox = document.getElementById('chat-disp');
-            chatBox.innerHTML = ''; // Clear current display
-
-            appData.chats.forEach(msg => {
-                let isMe = (msg.name === currentUser.name);
-                let align = isMe ? 'margin-left:auto; background:var(--primary); color:white;' : 'margin-right:auto; background:white; color:#333;';
-                
-                let html = `
-                <div style="width:fit-content; max-width:70%; padding:8px 12px; border-radius:10px; margin-bottom:8px; font-size:13px; ${align} box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                    <div style="font-size:10px; opacity:0.8; margin-bottom:2px;">${msg.sender}: ${msg.name}</div>
-                    ${msg.text}
-                    <div style="font-size:9px; opacity:0.6; text-align:right; margin-top:2px;">${msg.time}</div>
-                </div>`;
-                
-                chatBox.innerHTML += html;
+            let b = document.getElementById('chat-disp'); b.innerHTML='';
+            appData.classes[currentUser.class].chats.forEach(m => {
+                let me = m.n===currentUser.name;
+                b.innerHTML += `<div style="background:${me?'var(--primary)':'white'}; color:${me?'white':'black'}; padding:8px; border-radius:8px; margin-bottom:5px; width:80%; margin-left:${me?'auto':'0'}; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><b>${m.n}</b>: ${m.t}</div>`;
             });
-
-            // Auto scroll to bottom
-            chatBox.scrollTop = chatBox.scrollHeight;
+            b.scrollTop = b.scrollHeight;
         }
 
-        // *** MAGIC: LISTEN FOR UPDATES FROM OTHER TABS ***
-        window.addEventListener('storage', function(e) {
-            // When storage changes (someone sent a msg in another tab), reload data
-            appData = db.load();
-            renderChat();
-            renderDash(); 
-        });
-
-        // --- 5. OTHER FEATURES ---
-        function vote(option) { alert(`You voted for ${option}! Thanks.`); }
-        
-        function saveNote() {
-            let t = document.getElementById('private-note').value;
-            appData.note = t;
-            db.save();
-            alert('Diary Saved Securely!');
-        }
-
-        function setTheme(color) {
-            document.documentElement.style.setProperty('--primary', color);
-            alert('Theme Updated!');
-        }
-
-        function readNotice() {
-            let text = "Welcome to Focus Academy. " + appData.notices.join(". ");
-            let speech = new SpeechSynthesisUtterance(text);
-            window.speechSynthesis.speak(speech);
-        }
-
+        // UTILS
+        function startTimer() { clearInterval(timerInterval); let time = 25*60; timerInterval = setInterval(()=>{ let m=Math.floor(time/60), s=time%60; document.getElementById('timer-box').innerText=`${m}:${s<10?'0':''}${s}`; if(time--<=0){clearInterval(timerInterval); alert("Time Up!");}}, 1000); }
+        function resetTimer() { clearInterval(timerInterval); document.getElementById('timer-box').innerText="25:00"; }
+        window.addEventListener('storage', () => { appData = db.load(); renderDash(); renderChat(); renderLB(); });
         function nav(p) { 
-            document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
-            document.getElementById(p).classList.add('active');
-            if(p === 'chat-page') renderChat();
+            document.querySelectorAll('.page').forEach(e => e.classList.remove('active')); 
+            document.getElementById(p).classList.add('active'); 
+            if(p==='chat-page') renderChat();
+            if(p==='leaderboard-page') renderLB();
+            if(p==='quiz-page' && currentUser.role!=='student') renderQuizResults();
+            if(p==='quiz-page') renderQuiz();
         }
-        
         function goHome() { nav('dashboard'); }
-
     </script>
 </body>
 </html>
