@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Focus Academy Infinity</title>
+    <title>Focus Academy Ultimate</title>
     <style>
         /* --- CSS VARIABLES --- */
         :root {
@@ -54,9 +54,7 @@
         .card-icon { font-size: 26px; margin-bottom: 8px; }
         
         .btn-submit { width: 100%; background: var(--gradient); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-danger { background: var(--danger); }
-        .btn-success { background: var(--success); }
-
+        
         /* --- COMPONENTS --- */
         .list-item { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
@@ -83,7 +81,7 @@
     <div id="login-screen">
         <div class="scan-box">🎓</div>
         <h2>Focus Academy</h2>
-        <p style="color:var(--text-sec); font-size:12px;">Infinity Edition</p>
+        <p style="color:var(--text-sec); font-size:12px;">Infinity + Sync Chat</p>
         
         <div class="role-grid">
             <div class="role-card selected" onclick="setRole('student', this)">👨‍🎓 Student</div>
@@ -135,7 +133,11 @@
             <h2>🎨 App Theme</h2>
             <p>Select your favorite color:</p>
             <div class="theme-grid">
-                <div class="theme-ball" style="background:#4F46E5;" onclick="setTheme('#4F46E5')"></div> <div class="theme-ball" style="background:#EF4444;" onclick="setTheme('#EF4444')"></div> <div class="theme-ball" style="background:#10B981;" onclick="setTheme('#10B981')"></div> <div class="theme-ball" style="background:#F59E0B;" onclick="setTheme('#F59E0B')"></div> </div>
+                <div class="theme-ball" style="background:#4F46E5;" onclick="setTheme('#4F46E5')"></div> 
+                <div class="theme-ball" style="background:#EF4444;" onclick="setTheme('#EF4444')"></div> 
+                <div class="theme-ball" style="background:#10B981;" onclick="setTheme('#10B981')"></div> 
+                <div class="theme-ball" style="background:#F59E0B;" onclick="setTheme('#F59E0B')"></div> 
+            </div>
         </div>
 
         <div id="help-page" class="page">
@@ -149,8 +151,8 @@
         <div id="gallery-page" class="page">
             <h2>📸 Gallery</h2>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div style="background:#ffe4e6; height:100px; border-radius:10px; display:flex; align-items:center; justify-content:center;">Event 1</div>
-                <div style="background:#dbeafe; height:100px; border-radius:10px; display:flex; align-items:center; justify-content:center;">Event 2</div>
+                <div style="background:#ffe4e6; height:100px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#333;">Event 1</div>
+                <div style="background:#dbeafe; height:100px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#333;">Event 2</div>
             </div>
         </div>
 
@@ -162,10 +164,17 @@
 
         <div id="bus-page" class="page"><h2>🚌 Bus</h2><div class="list-item"><b>Current Loc:</b> Sarai Market</div></div>
         <div id="file-page" class="page"><h2>📂 Files</h2><div class="list-item">Syllabus_2026.pdf</div></div>
-        
         <div id="whiteboard-page" class="page"><h2>🎨 Whiteboard</h2><div style="border:1px solid #999; height:300px; background:white;"></div></div>
         <div id="qr-page" class="page"><h2>🔳 ID Card</h2><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Focus" style="display:block; margin:0 auto;"></div>
-        <div id="chat-page" class="page"><h2>💬 Chat</h2><div style="height:300px; background:#f0f0f0; border-radius:10px; margin-bottom:10px;" id="chat-disp"></div><input id="chat-in"><button class="btn-submit" onclick="sendMsg()">Send</button></div>
+        
+        <div id="chat-page" class="page">
+            <h2>💬 Live Chat</h2>
+            <div style="height:350px; background:#f0f0f0; border-radius:10px; margin-bottom:10px; overflow-y:scroll; padding:10px;" id="chat-disp"></div>
+            <div style="display:flex; gap:10px;">
+                <input id="chat-in" placeholder="Type here..." style="margin:0;">
+                <button class="btn-submit" style="width:60px; margin:0;" onclick="sendMsg()">➤</button>
+            </div>
+        </div>
 
         <div class="bottom-nav">
             <div class="nav-item active" onclick="goHome()"><span class="nav-icon">🏠</span>Home</div>
@@ -175,36 +184,50 @@
     </div>
 
     <script>
-        // --- STATE ---
+        // --- 1. DATABASE & STATE ---
         const db = {
-            save: () => localStorage.setItem('focusInfDB', JSON.stringify(appData)),
+            save: () => localStorage.setItem('focusFinalDB', JSON.stringify(appData)),
             load: () => {
-                const d = localStorage.getItem('focusInfDB');
+                const d = localStorage.getItem('focusFinalDB');
+                // Ensure chats array exists even in fresh load
                 return d ? JSON.parse(d) : { notices: ["Welcome to Focus Academy!"], chats: [], note: "" };
             }
         };
+
         let appData = db.load();
-        let currentUser = { role: 'student', name: '' };
+        // Fix for older data versions if chats is missing
+        if(!appData.chats) appData.chats = [];
         
-        // --- AUTH ---
+        let currentUser = { role: 'student', name: '' };
+
+        // --- 2. AUTHENTICATION ---
         function setRole(r, el) {
             currentUser.role = r;
             document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
         }
+
         function login() {
             const n = document.getElementById('username').value;
             if(!n) return alert("Enter Name");
             currentUser.name = n;
+            
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-ui').style.display = 'block';
             document.getElementById('header-role').innerText = currentUser.role.toUpperCase();
-            document.getElementById('private-note').value = appData.note || ""; 
+            
+            // Load Private Note
+            if(document.getElementById('private-note')) {
+                document.getElementById('private-note').value = appData.note || ""; 
+            }
+
             renderDash();
+            renderChat(); // Load existing chat history
         }
+
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
-        // --- DASHBOARD ---
+        // --- 3. DASHBOARD RENDERING ---
         function renderDash() {
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = '';
@@ -212,11 +235,12 @@
 
             // Universal Items
             items.push({i:'💬', l:'Chat', f:"nav('chat-page')"});
-            items.push({i:'🎨', l:'Theme', f:"nav('theme-page')"}); // NEW
-            items.push({i:'📒', l:'Diary', f:"nav('notes-page')"}); // NEW
-            items.push({i:'📞', l:'Help', f:"nav('help-page')"}); // NEW
-            items.push({i:'🗳️', l:'Vote', f:"nav('poll-page')"}); // NEW
+            items.push({i:'🎨', l:'Theme', f:"nav('theme-page')"}); 
+            items.push({i:'📒', l:'Diary', f:"nav('notes-page')"}); 
+            items.push({i:'📞', l:'Help', f:"nav('help-page')"}); 
+            items.push({i:'🗳️', l:'Vote', f:"nav('poll-page')"}); 
 
+            // Role Specific
             if(currentUser.role === 'student') {
                 items.push({i:'📸', l:'Gallery', f:"nav('gallery-page')"});
                 items.push({i:'🧮', l:'Calc', f:"nav('calc-page')"});
@@ -232,16 +256,71 @@
                 grid.innerHTML += `<div class="card" onclick="${x.f}"><span class="card-icon">${x.i}</span><b>${x.l}</b></div>`;
             });
             
+            // Notices
             let nHtml = '';
             appData.notices.forEach(n => nHtml += `<div class="list-item">${n}</div>`);
             document.getElementById('notice-board').innerHTML = nHtml;
         }
 
-        // --- NEW FEATURES LOGIC ---
-        function vote(option) {
-            alert(`You voted for ${option}! Thanks.`);
+        // --- 4. CHAT SYSTEM (SYNCED) ---
+        
+        function sendMsg() {
+            let input = document.getElementById('chat-in');
+            let text = input.value;
+            
+            if(text.trim() !== "") {
+                // 1. Add message to data
+                let newMsg = {
+                    sender: currentUser.role.toUpperCase(), 
+                    name: currentUser.name,
+                    text: text,
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                };
+                
+                appData.chats.push(newMsg);
+                
+                // 2. Save to Storage
+                db.save();
+                
+                // 3. Clear Input & Render
+                input.value = '';
+                renderChat();
+            }
         }
 
+        function renderChat() {
+            const chatBox = document.getElementById('chat-disp');
+            chatBox.innerHTML = ''; // Clear current display
+
+            appData.chats.forEach(msg => {
+                let isMe = (msg.name === currentUser.name);
+                let align = isMe ? 'margin-left:auto; background:var(--primary); color:white;' : 'margin-right:auto; background:white; color:#333;';
+                
+                let html = `
+                <div style="width:fit-content; max-width:70%; padding:8px 12px; border-radius:10px; margin-bottom:8px; font-size:13px; ${align} box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="font-size:10px; opacity:0.8; margin-bottom:2px;">${msg.sender}: ${msg.name}</div>
+                    ${msg.text}
+                    <div style="font-size:9px; opacity:0.6; text-align:right; margin-top:2px;">${msg.time}</div>
+                </div>`;
+                
+                chatBox.innerHTML += html;
+            });
+
+            // Auto scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // *** MAGIC: LISTEN FOR UPDATES FROM OTHER TABS ***
+        window.addEventListener('storage', function(e) {
+            // When storage changes (someone sent a msg in another tab), reload data
+            appData = db.load();
+            renderChat();
+            renderDash(); 
+        });
+
+        // --- 5. OTHER FEATURES ---
+        function vote(option) { alert(`You voted for ${option}! Thanks.`); }
+        
         function saveNote() {
             let t = document.getElementById('private-note').value;
             appData.note = t;
@@ -260,18 +339,12 @@
             window.speechSynthesis.speak(speech);
         }
 
-        function sendMsg() {
-            let t = document.getElementById('chat-in').value;
-            if(t) {
-                document.getElementById('chat-disp').innerHTML += `<div style="background:white; padding:5px; margin:5px;"><b>${currentUser.name}:</b> ${t}</div>`;
-                document.getElementById('chat-in').value = '';
-            }
-        }
-
         function nav(p) { 
             document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
             document.getElementById(p).classList.add('active');
+            if(p === 'chat-page') renderChat();
         }
+        
         function goHome() { nav('dashboard'); }
 
     </script>
